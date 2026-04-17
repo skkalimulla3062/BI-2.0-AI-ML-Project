@@ -1,27 +1,42 @@
 BI-2.0-AI-ML-Project
-Business Intelligence 2.0: The Role Of Artificial Intelligence and Machine Learning in Real Time Decision Making
 import streamlit as st
 import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 
-st.title("Business Intelligence 2.0 Dashboard")
+st.title("Business Intelligence 2.0")
+st.subheader("AI & ML for Real-Time Decision Making")
 
-uploaded_file = st.file_uploader("Upload CSV File")
+# Upload dataset
+uploaded_file = st.file_uploader("Upload CSV file", type=["csv"])
 
 if uploaded_file:
     data = pd.read_csv(uploaded_file)
-    st.write("Dataset Preview", data)
 
+    st.write("Dataset Preview:")
+    st.write(data.head())
+
+    # Preprocessing
+    data = data.dropna()
+    data = data.drop_duplicates()
+
+    # Feature selection
     X = data[['Month']]
     y = data['Sales']
 
+    # Model
     model = LinearRegression()
     model.fit(X, y)
 
+    # Prediction
     predictions = model.predict(X)
 
-    data['Predicted Sales'] = predictions
+    # Visualization
+    st.write("### Visualization")
+    fig, ax = plt.subplots()
+    ax.plot(X, y, label="Actual")
+    ax.plot(X, predictions, label="Predicted")
+    ax.legend()
+    st.pyplot(fig)
 
-    st.write("Predictions", data)
-
-    st.line_chart(data[['Sales', 'Predicted Sales']])
+    st.success("Prediction completed successfully!")
